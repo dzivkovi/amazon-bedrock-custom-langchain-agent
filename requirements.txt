@@ -1,7 +1,9 @@
 requests
 langchain
+langchain_community
 faiss-cpu
 streamlit
 boto3
 botocore
 selenium
+langgraph
