@@ -29,7 +29,7 @@ def well_arch_tool(query: str) -> Dict[str, Any]:
         client=bedrock_runtime,
         model_id="amazon.titan-embed-text-v1",
     )
-    vectorstore = FAISS.load_local("local_index", embeddings)
+    vectorstore = FAISS.load_local("local_index", embeddings, allow_dangerous_deserialization=True)
     docs = vectorstore.similarity_search(query)
 
     resp_json = {"docs": docs}
@@ -117,18 +117,27 @@ def should_continue(data):
     # This will be used when setting up the graph to define the flow
     else:
         return "continue"
-    
+
+
 def main():
+
+    question = "What does the AWS Well-Architected Framework say about how to create secure VPCs?"
+    print("\nQuestion:", question)
+
     # Create Agent
     agent_runnable = construct_agent()
     # Create LangGraph Workflow with Agent as Entrypoint
     chain = create_graph_workflow(agent_runnable)
     # Invoke the LangGraph Workflow with input and intermediate steps
-    result = chain.invoke({"input": "What does the AWS Well-Architected Framework say about how to create secure VPCs?", "intermediate_steps": []})
+    result = chain.invoke(
+        {
+            "input": question,
+            "intermediate_steps": [],
+        }
+    )
     # Print the output of the LangGraph Workflow - this is the output of the Agent
     output = result['agent_outcome'].return_values["output"]
-    print(output)
+    print("\nAnswer:", output)
 
 if __name__ == "__main__":
     main()
-     

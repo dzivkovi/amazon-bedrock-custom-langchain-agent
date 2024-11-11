@@ -52,7 +52,7 @@ def well_arch_tool(query: str) -> Dict[str, Any]:
         client=bedrock_runtime,
         model_id="amazon.titan-embed-text-v1",
     )
-    vectorstore = FAISS.load_local("local_index", embeddings)
+    vectorstore = FAISS.load_local("local_index", embeddings, allow_dangerous_deserialization=True)
     docs = vectorstore.similarity_search(query)
     return {"docs": docs}
 
